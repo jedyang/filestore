@@ -2,10 +2,12 @@ package com.yunsheng.filestore.config;
 
 import com.mongodb.client.MongoDatabase;
 
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.MongoDbFactory;
+//import org.springframework.data.mongodb.core.MongoTemplate;
 
-public class MultiMongoTemplate extends MongoTemplate {
+public class MultiMongoTemplate {}
+        /**
+        extends MongoTemplate {
     private static ThreadLocal<MongoDbFactory> mongoDbFactoryThreadLocal;
 
     public MultiMongoTemplate(MongoDbFactory mongoDbFactory) {
@@ -28,3 +30,4 @@ public class MultiMongoTemplate extends MongoTemplate {
         return mongoDbFactoryThreadLocal.get().getDb();
     }
 }
+**/

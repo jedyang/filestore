@@ -6,9 +6,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+//import org.springframework.data.mongodb.MongoDbFactory;
+//import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.stereotype.Component;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -22,11 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Component
-@Aspect
-@Slf4j
+//@Component
+//@Aspect
+//@Slf4j
 public class MongoSwitch {
 
+    /**
     @Autowired
     private MongoDbFactory mongoDbFactory;
     private Map<String, MongoDbFactory> templateMuliteMap = new HashMap<>();
@@ -82,4 +83,6 @@ public class MongoSwitch {
         }
         return result;
     }
+
+    **/
 }
