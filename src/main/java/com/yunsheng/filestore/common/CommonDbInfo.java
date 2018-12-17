@@ -1,11 +1,17 @@
 package com.yunsheng.filestore.common;
 
-public class CommonDbInfo {
+import java.io.Serializable;
+
+import lombok.Data;
+
+@Data
+public class CommonDbInfo implements Serializable{
+	private static final long serialVersionUID = -3258839839160856613L;
 
 	public static final String COMMON_DB_NAME = "commonDB";
 	public static final String COMMON_COLLECTION_NAME = "commonDB";
 	public static final String COMMON_USER_NAME = "common";
-	public static final String COMMON_PWD = "123456";
+	public static final String COMMON_PWD = "Haier,123";
 
 	public static final String KEY_APPKEY = "appKey";
 	public static final String KEY_USER = "user";
@@ -19,28 +25,4 @@ public class CommonDbInfo {
 	private String dbName;
 	private String ips;
 	
-	public String getUser() {
-		return user;
-	}
-	public void setUser(String user) {
-		this.user = user;
-	}
-	public String getPwd() {
-		return pwd;
-	}
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-	public String getDbName() {
-		return dbName;
-	}
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
-	public String getIps() {
-		return ips;
-	}
-	public void setIps(String ips) {
-		this.ips = ips;
-	}
 }
