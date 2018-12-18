@@ -1,16 +1,21 @@
 package com.yunsheng.filestore.controller;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.yunsheng.filestore.common.CommonDbInfo;
 import com.yunsheng.filestore.common.responses.ApiResponses;
 import com.yunsheng.filestore.common.responses.ErrorCodeEnum;
 import com.yunsheng.filestore.entity.CommonDB;
 import com.yunsheng.filestore.service.BaseMongoService;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.mongodb.core.MongoTemplate;
 //import org.springframework.data.mongodb.core.query.Criteria;
 //import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,19 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@RequestMapping("/dbInfo")
+@Slf4j
 public class DBInfoController {
     @Autowired
     MongoTemplate mongotemplate;
 
-//    @Autowired
-//    BaseMongoService baseMongoService;
+    @Autowired
+    BaseMongoService baseMongoService;
 
     /**
      * 返回库的信息
      */
     @RequestMapping("/queryAll")
-    @ResponseBody
     public ApiResponses<List<CommonDB>> queryAll() {
         List<CommonDB> mongotemplateAll = new ArrayList<>();
         try {
@@ -50,14 +58,20 @@ public class DBInfoController {
      * 返回库的信息
      */
     @RequestMapping("/queryInfo")
-    @ResponseBody
     public ApiResponses<CommonDB> queryInfo(@RequestParam String dbName) {
         CommonDB dbInfo;
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where("dbName").is(dbName));
             dbInfo = mongotemplate.findOne(query, CommonDB.class);
-        }catch (Exception e){
+
+            MongoTemplate myTemplate = baseMongoService.getMongoTemplate(dbInfo.getUser(), dbInfo.getDbName(), dbInfo.getPwd());
+
+            MongoCollection<Document> collection = myTemplate.getCollection("fs.files");
+
+            long l = collection.countDocuments();
+            log.info("count:" + l);
+        } catch (Exception e) {
             return ApiResponses.failure(ErrorCodeEnum.UNKNOW_ERR, e);
 
         }
