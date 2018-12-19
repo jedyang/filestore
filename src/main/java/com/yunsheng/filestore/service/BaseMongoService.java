@@ -116,17 +116,18 @@ public class BaseMongoService {
         return mongoClientMap.get(mongoClientKey);
     }
 
-    public MongoTemplate getMongoTemplate(String userName, String dbName, String passwd){
+    public MongoTemplate getMongoTemplate(String userName, String dbName, String passwd) {
 
         MongoTemplate mongoTemplate = mongoTemplateMap.get(dbName);
 
         // double check 确保单例
-        if (null == mongoTemplate){
-            synchronized (this){
+        if (null == mongoTemplate) {
+            synchronized (this) {
                 mongoTemplate = mongoTemplateMap.get(dbName);
                 if (null == mongoTemplate) {
-                    String uri = "mongodb://" + userName + ":" + passwd + "@" + mongoAddress + "/" + dbName;
-                    MongoClientURI mongoClientURI = new MongoClientURI(uri);
+                    StringBuffer sb = new StringBuffer("mongodb://");
+                    sb.append(userName).append(":").append(passwd).append("@").append(mongoAddress).append("/").append(dbName);
+                    MongoClientURI mongoClientURI = new MongoClientURI(sb.toString());
                     MongoDbFactory mongoDbFactory = new SimpleMongoDbFactory(mongoClientURI);
                     mongoTemplate = new MongoTemplate(mongoDbFactory);
                     mongoTemplateMap.put(dbName, mongoTemplate);
@@ -134,7 +135,7 @@ public class BaseMongoService {
             }
         }
 
-        return  mongoTemplate;
+        return mongoTemplate;
 
     }
 }
