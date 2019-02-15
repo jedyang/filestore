@@ -10,18 +10,21 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @Controller
-@RequestMapping("/")
 @Slf4j
 public class AdminLoginController {
 
-    @RequestMapping(value = "login")
-    public ModelAndView login() {
-        log.info("login===");
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
-        modelAndView.addObject("name", "IT技术圈");
-        return modelAndView;
-    }
+//    @RequestMapping(value = "login")
+//    public ModelAndView login() {
+//        log.info("login===");
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("login");
+//        modelAndView.addObject("name", "IT技术圈");
+//        return modelAndView;
+//    }
 
+    @RequestMapping(value = "/login")
+    public String login() {
+        return "login";
+    }
 
 }

@@ -2,21 +2,20 @@ spring:
   data:
     mongodb:
       uri: mongodb://common:Haier,123@10.135.7.56:50000,10.135.7.58:50000,10.135.6.66:50000/commonDB
-#  thymeleaf:
+  thymeleaf:
 #    mode: LEGACYHTML5
 #    cache: false
-#    prefix: classpath:/templates/
-#    suffix: .html
-#    servlet:
-#      content-type: text/html
-#  # 指定静态资源路径
-#  mvc:
-#    static-path-pattern: /admin/*
-#    view:
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
+  mvc:
+    static-path-pattern: /static/**
+    view:
 #      prefix: /admin
-#      suffix: .html
-#  resources:
-#    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+      suffix: .html
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
 
 
 me:

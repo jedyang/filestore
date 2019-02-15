@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
-@RequestMapping("/")
 @Slf4j
 public class AdminIndexController {
     @RequestMapping(value = "/index")
-    public String login() {
+    public String index() {
         return "index";
     }
 

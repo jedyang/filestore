@@ -1,8 +1,11 @@
 package com.yunsheng.filestore.controller;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.yunsheng.filestore.common.CommonDbInfo;
+import com.yunsheng.filestore.common.MongoConstant;
 import com.yunsheng.filestore.common.responses.ApiResponses;
 import com.yunsheng.filestore.common.responses.ErrorCodeEnum;
 import com.yunsheng.filestore.entity.CommonDB;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,19 +62,25 @@ public class DBInfoController {
      * 返回库的信息
      */
     @RequestMapping("/queryInfo")
-    public ApiResponses<CommonDB> queryInfo(@RequestParam String dbName) {
-        CommonDB dbInfo;
+    public ApiResponses<Document> queryInfo(@RequestParam String user,@RequestParam String dbName, @RequestParam String pwd) {
+        Document dbInfo;
         try {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("dbName").is(dbName));
-            dbInfo = mongotemplate.findOne(query, CommonDB.class);
+//            Query query = new Query();
+//            query.addCriteria(Criteria.where("dbName").is(dbName));
+//            dbInfo = mongotemplate.findOne(query, CommonDB.class);
 
-            MongoTemplate myTemplate = baseMongoService.getMongoTemplate(dbInfo.getUser(), dbInfo.getDbName(), dbInfo.getPwd());
+            MongoTemplate myTemplate = baseMongoService.getMongoTemplate(user, dbName, pwd);
 
-            MongoCollection<Document> collection = myTemplate.getCollection("fs.files");
+            MongoDatabase mongoDatabase = myTemplate.getDb();
+            Map<String, Object> statsArguments = new BasicDBObject();
+            statsArguments.put(MongoConstant.COMMAND_DB_STATS, 1);
+            statsArguments.put(MongoConstant.SCALE_KEY, 1024 * 1024);
+            BasicDBObject statsCommand = new BasicDBObject(statsArguments);
+            dbInfo = mongoDatabase.runCommand(statsCommand);
+//            MongoCollection<Document> collection = myTemplate.getCollection("fs.files");
 
-            long l = collection.countDocuments();
-            log.info("count:" + l);
+//            long l = collection.countDocuments();
+            log.info(dbInfo.toJson());
         } catch (Exception e) {
             return ApiResponses.failure(ErrorCodeEnum.UNKNOW_ERR, e);
 
