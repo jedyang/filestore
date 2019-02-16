@@ -1,5 +1,7 @@
 package com.yunsheng.filestore.common.responses;
 
+import com.yunsheng.filestore.entity.AppDBInfo;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,47 +17,22 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import lombok.Data;
+
 /**
- * 接口返回(多态)
+ * 接口返回
  *
  * @author yunsheng
  */
+
+@Data
 public class ApiResponses<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 不需要返回结果
-     */
-    public static ApiResponses<Void> empty() {
-        return SuccessResponses.<Void>builder().status(HttpStatus.OK.value()).build();
-
-    }
-
-    /**
-     * 成功返回
-     *
-     * @param object
-     */
-    public static <T> ApiResponses<T> success(T object) {
-        return SuccessResponses.<T>builder().status(HttpStatus.OK.value()).result(object).build();
-
-    }
-
-    /**
-     * 失败返回
-     *
-     * @param errorCode
-     * @param exception
-     */
-    public static <T> ApiResponses<T> failure(ErrorCodeEnum errorCode, Exception exception) {
-//        return FailedResponse.builder().status(errorCode.httpCode()).msg(errorCode.msg()).build();
-        return FailedResponse.exceptionMsg(FailedResponse.builder().msg(errorCode.msg()), exception)
-                .error(String.valueOf(errorCode.httpCode()))
-                .show(errorCode.show())
-                .time(LocalDateTime.now())
-                .status(errorCode.httpCode())
-                .build();
-    }
+    private Integer code;
+    private String msg;
+    private long count;
+    T data;
 
 }

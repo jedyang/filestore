@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>会员列表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/weadmin.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">资源使用</a>
+        <a>
+          <cite>应用列表</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">&#x1002;</i></a>
+</div>
+
+<div id="testText">
+    <span th:text="${topicPage}"></span>
+</div>
+
+<div class="weadmin-body">
+    <!--<table class="layui-table" id="memberList">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th>ID</th>-->
+    <!--<th>app</th>-->
+    <!--<th>操作</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr th:each="appDb,iteratorStat : ${allAppDBInfo}">-->
+    <!--<td th:text="${iteratorStat.index}"></td>-->
+    <!--<td th:text="${appDb.dbName}"></td>-->
+
+    <!--<td class="td-manage">-->
+    <!--<a onclick="member_stop(this,'10001')" href="javascript:;" title="启用">-->
+    <!--<i class="layui-icon">&#xe601;</i>-->
+    <!--</a>-->
+    <!--<a title="编辑" onclick="WeAdminEdit('编辑','./edit.html', 1, 600, 400)"-->
+    <!--href="javascript:;">-->
+    <!--<i class="layui-icon">&#xe642;</i>-->
+    <!--</a>-->
+    <!--<a onclick="WeAdminShow('修改密码','./password.html',600,400)" title="修改密码"-->
+    <!--href="javascript:;">-->
+    <!--<i class="layui-icon">&#xe631;</i>-->
+    <!--</a>-->
+    <!--<a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">-->
+    <!--<i class="layui-icon">&#xe640;</i>-->
+    <!--</a>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--<div class="page">-->
+    <!--<div>-->
+    <!--<a class="prev" href="">&lt;&lt;</a>-->
+    <!--<a class="num" href="">1</a>-->
+    <!--<span class="current">2</span>-->
+    <!--<a class="num" href="">3</a>-->
+    <!--<a class="num" href="">489</a>-->
+    <!--<a class="next" href="">&gt;&gt;</a>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <table id="appDbList"></table>
+</div>
+<!--<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>-->
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    layui.use('table', function () {
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+                         elem: '#appDbList'
+                         , url: '/dbinfo/queryInfo' //数据接口
+                         , page: true //开启分页
+                         , even: true //隔行背景
+                         , cols: [
+                [{
+                    field: 'autoInc', title: 'id', width: 80, type: 'numbers'
+                }, {
+                    field: 'dbName', title: 'app'
+                }, {
+                    field: 'appOwner', title: '业务负责人'
+                }, {
+                    field: 'dataSize', title: '数据占用'
+                }, {
+                    field: 'storageSize', title: '磁盘占用'
+                }]
+            ]
+                     });
+
+    });
+</script>
+</body>
+
+</html>
