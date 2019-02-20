@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://common:Haier,123@10.135.7.56:50000,10.135.7.58:50000,10.135.6.66:50000/commonDB
+      uri: mongodb://common:passwd@ip:port/commonDB
   thymeleaf:
     mode: LEGACYHTML5
 #    cache: false
@@ -19,4 +19,4 @@ spring:
 
 
 me:
-  mongoAddress: 10.135.7.56:50000,10.135.7.58:50000,10.135.6.66:50000
+  mongoAddress: ip:port

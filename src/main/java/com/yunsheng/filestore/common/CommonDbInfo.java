@@ -11,7 +11,7 @@ public class CommonDbInfo implements Serializable{
 	public static final String COMMON_DB_NAME = "commonDB";
 	public static final String COMMON_COLLECTION_NAME = "commonDB";
 	public static final String COMMON_USER_NAME = "common";
-	public static final String COMMON_PWD = "Haier,123";
+	public static final String COMMON_PWD = "passwd";
 
 	public static final String KEY_APPKEY = "appKey";
 	public static final String KEY_USER = "user";
