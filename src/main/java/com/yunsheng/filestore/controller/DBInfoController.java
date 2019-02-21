@@ -1,43 +1,24 @@
 package com.yunsheng.filestore.controller;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoSecurityException;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.yunsheng.filestore.common.CommonDbInfo;
-import com.yunsheng.filestore.common.MongoConstant;
 import com.yunsheng.filestore.common.responses.ApiResponses;
-import com.yunsheng.filestore.common.responses.ErrorCodeEnum;
 import com.yunsheng.filestore.entity.AppDBInfo;
-import com.yunsheng.filestore.entity.CommonDB;
-import com.yunsheng.filestore.service.BaseMongoService;
 import com.yunsheng.filestore.service.MongoDBService;
 
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.mongodb.core.MongoTemplate;
-//import org.springframework.data.mongodb.core.query.Criteria;
-//import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+
+//import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.query.Criteria;
+//import org.springframework.data.mongodb.core.query.Query;
 
 @Controller
 @Slf4j

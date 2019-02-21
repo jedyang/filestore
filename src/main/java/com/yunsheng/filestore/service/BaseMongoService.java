@@ -1,6 +1,7 @@
 package com.yunsheng.filestore.service;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
@@ -16,9 +17,6 @@ import com.yunsheng.filestore.common.MongoConstant;
 import org.apache.commons.lang.StringUtils;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class BaseMongoService {
 
@@ -36,7 +37,24 @@ public class BaseMongoService {
 
     private static final Map<String, MongoClient> mongoClientMap = new HashMap<String, MongoClient>();
 
-    private static final Map<String, MongoTemplate> mongoTemplateMap = new HashMap<>();
+//    private static final Map<String, MongoTemplate> mongoTemplateMap = new HashMap<>();
+
+    /**
+     * 获取db对象
+     */
+    public DB getDB(String dbName) {
+        CommonDbInfo commonDbInfo = getCommonDbInfo(dbName);
+        if (StringUtils.isBlank(commonDbInfo.getUser())) {
+            log.error("common表中未记录该库信息");
+        }
+        MongoCredential mongoCredential = MongoCredential.createCredential(commonDbInfo.getUser(), commonDbInfo.getDbName(), commonDbInfo.getPwd().toCharArray());
+
+        List<ServerAddress> addressList = getServerAddresses(commonDbInfo.getIps());
+
+        MongoClient mongoClient = getMongoClient(addressList, mongoCredential);
+
+        return mongoClient.getDB(dbName);
+    }
 
     /**
      * 获取commonDB库的连接
@@ -65,23 +83,14 @@ public class BaseMongoService {
     }
 
 
-    /**
-     * @param dbName 要获取的库
-     */
-    public MongoDatabase getMongoDatabaseByAdmin(String dbName) {
-        List<ServerAddress> addressList = getServerAddresses("");
-        CommonDbInfo commonDbInfo = getCommonDbInfo(addressList, MongoConstant.DB_ADMIN);
-        MongoCredential mongoCredential = MongoCredential.createCredential(commonDbInfo.getUser(), commonDbInfo.getDbName(), commonDbInfo.getPwd().toCharArray());
-        return getMongoClient(addressList, mongoCredential).getDatabase(dbName);
-    }
+
 
     /**
      * @param dbName 要获取的库
      */
     public MongoDatabase getMongoDatabase(String dbName) {
-        // 先通过commonDB获取需要的连接信息
-        List<ServerAddress> addressList = getServerAddresses("");
-        CommonDbInfo commonDbInfo = getCommonDbInfo(addressList, dbName);
+
+        CommonDbInfo commonDbInfo = getCommonDbInfo(dbName);
         MongoCredential mongoCredential = MongoCredential.createCredential(commonDbInfo.getUser(), commonDbInfo.getDbName(), commonDbInfo.getPwd().toCharArray());
         String ips = commonDbInfo.getIps();
 
@@ -110,7 +119,9 @@ public class BaseMongoService {
     /**
      * 获取commonDB库的commonDB表存储的用户名、密码
      */
-    private CommonDbInfo getCommonDbInfo(List<ServerAddress> addressList, String appName) {
+    private CommonDbInfo getCommonDbInfo(String appName) {
+
+        List<ServerAddress> addressList = getServerAddresses("");
 
         String commonDbKey = addressList.hashCode() + ":commondb";
         MongoClient mongoClient = mongoClientMap.get(commonDbKey);
@@ -166,26 +177,26 @@ public class BaseMongoService {
         return mongoClientMap.get(mongoClientKey);
     }
 
-    public MongoTemplate getMongoTemplate(String userName, String dbName, String passwd) {
-
-        MongoTemplate mongoTemplate = mongoTemplateMap.get(dbName);
-
-        // double check 确保单例
-        if (null == mongoTemplate) {
-            synchronized (this) {
-                mongoTemplate = mongoTemplateMap.get(dbName);
-                if (null == mongoTemplate) {
-                    StringBuffer sb = new StringBuffer("mongodb://");
-                    sb.append(userName).append(":").append(passwd).append("@").append(mongoAddress).append("/").append(dbName);
-                    MongoClientURI mongoClientURI = new MongoClientURI(sb.toString());
-                    MongoDbFactory mongoDbFactory = new SimpleMongoDbFactory(mongoClientURI);
-                    mongoTemplate = new MongoTemplate(mongoDbFactory);
-                    mongoTemplateMap.put(dbName, mongoTemplate);
-                }
-            }
-        }
-
-        return mongoTemplate;
-
-    }
+//    public MongoTemplate getMongoTemplate(String userName, String dbName, String passwd) {
+//
+//        MongoTemplate mongoTemplate = mongoTemplateMap.get(dbName);
+//
+//        // double check 确保单例
+//        if (null == mongoTemplate) {
+//            synchronized (this) {
+//                mongoTemplate = mongoTemplateMap.get(dbName);
+//                if (null == mongoTemplate) {
+//                    StringBuffer sb = new StringBuffer("mongodb://");
+//                    sb.append(userName).append(":").append(passwd).append("@").append(mongoAddress).append("/").append(dbName);
+//                    MongoClientURI mongoClientURI = new MongoClientURI(sb.toString());
+//                    MongoDbFactory mongoDbFactory = new SimpleMongoDbFactory(mongoClientURI);
+//                    mongoTemplate = new MongoTemplate(mongoDbFactory);
+//                    mongoTemplateMap.put(dbName, mongoTemplate);
+//                }
+//            }
+//        }
+//
+//        return mongoTemplate;
+//
+//    }
 }
