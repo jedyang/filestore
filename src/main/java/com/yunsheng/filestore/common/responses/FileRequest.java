@@ -11,5 +11,5 @@ public class FileRequest implements Serializable {
     private byte[] bytes;
     private String fileName;
     private String appName;
-
+    private String fileId;
 }

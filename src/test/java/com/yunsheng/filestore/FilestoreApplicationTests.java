@@ -24,7 +24,7 @@ public class FilestoreApplicationTests {
     @Test
     public void upload() throws IOException {
         FileRequest request = new FileRequest();
-        request.setAppName("yxhd");
+        request.setAppName("hsirrfw");
         request.setFileName("test.png");
         byte[] fileBytes = FileUtils.readFileToByteArray(new File("E:\\图标\\云朵.png"));
         request.setBytes(fileBytes);

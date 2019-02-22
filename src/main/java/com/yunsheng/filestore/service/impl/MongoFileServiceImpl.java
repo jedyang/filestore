@@ -1,7 +1,10 @@
 package com.yunsheng.filestore.service.impl;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import com.yunsheng.filestore.common.responses.FileRequest;
 import com.yunsheng.filestore.common.responses.FileResult;
@@ -12,8 +15,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,6 +95,40 @@ public class MongoFileServiceImpl implements MongoFileService {
         return result;
     }
 
+    @Override
+    public FileResult findFileByUUID(FileRequest request) {
+        FileResult result = new FileResult();
+        result.setSuccess(false);
+        try {
+            if (!commonCheck(request.getAppName(), request.getFileId(), result)) {
+                return result;
+            }
+
+            GridFS gridFS = getGridFS(request.getAppName());
+            if (gridFS == null) {
+                result.setMsg("host or port or appName invalid");
+                return result;
+            }
+            DBObject query = new BasicDBObject();
+            query.put(FILE_UUID, request.getFileId());
+            List<GridFSDBFile> fileList = gridFS.find(query);
+            if (fileList != null && !fileList.isEmpty()) {
+                GridFSDBFile gFile = fileList.get(0);
+                ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                gFile.writeTo(byteStream);
+                result.setFileBytes(byteStream.toByteArray());
+                result.setFileName(gFile.getFilename());
+                result.setFileContent(gFile.getContentType());
+            }
+            result.setSuccess(true);
+            result.setMsg("success");
+        } catch (Exception e) {
+            log.error("findFileByUUID error,appName=" + request.getAppName() + ",fileId=" + request.getFileId(), e);
+            result.setMsg(e != null ? e.toString() : "");
+        }
+        return result;
+    }
+
     /**
      * 获取gridfs对象
      */
@@ -115,5 +155,17 @@ public class MongoFileServiceImpl implements MongoFileService {
             fsMap.put(gridFSKey, gridFS);
         }
         return fsMap.get(gridFSKey);
+    }
+
+    private boolean commonCheck(String appName, String fileUUID, FileResult result) {
+        if (StringUtils.isBlank(appName)) {
+            result.setMsg("appName cannot empty");
+            return false;
+        }
+        if (StringUtils.isBlank(fileUUID)) {
+            result.setMsg("fileUUID cannot empty");
+            return false;
+        }
+        return true;
     }
 }

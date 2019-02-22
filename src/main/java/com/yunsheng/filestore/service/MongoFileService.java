@@ -13,4 +13,13 @@ public interface MongoFileService {
      * @return
      */
      FileResult saveFile(FileRequest request);
+
+    /**
+     * 查询文件需设置FileRequest里的fileId和appName属性
+     * 查询结果根据FileResult的success属性判断
+     * 如果为true,则会返回文件的byte[](bytes属性)和文件名(fileName属性)
+     * @param request
+     * @return
+     */
+     FileResult findFileByUUID(FileRequest request);
 }
