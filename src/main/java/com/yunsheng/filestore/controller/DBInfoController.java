@@ -1,19 +1,26 @@
 package com.yunsheng.filestore.controller;
 
 import com.yunsheng.filestore.common.responses.ApiResponses;
+import com.yunsheng.filestore.common.responses.ReturnApi;
 import com.yunsheng.filestore.entity.AppDBInfo;
 import com.yunsheng.filestore.service.MongoDBService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 //import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,12 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
+@Api("库信息相关的api")
+@RequestMapping("/dbinfo")
 public class DBInfoController {
 
     @Autowired
     MongoDBService mongoDBService;
 
-    @RequestMapping(value = "/pages/filestore/{page}")
+    @RequestMapping(value = "/filestore/{page}", method = RequestMethod.GET)
     public ModelAndView filestore(@PathVariable("page") String page) {
         log.info("6show:" + page);
 
@@ -45,7 +54,7 @@ public class DBInfoController {
     /**
      * 返回库的信息
      */
-    @RequestMapping("/dbinfo/queryInfo")
+    @GetMapping("/queryInfo")
     @ResponseBody
     public ApiResponses<List<AppDBInfo>> queryInfo(@RequestParam(name = "page") Integer page, @RequestParam(name = "limit") Integer limit) {
 
@@ -84,31 +93,33 @@ public class DBInfoController {
         responses.setCount(count);
         return responses;
     }
-//    /**
-//     * 返回库的信息
-//     */
-//    @RequestMapping("/dbinfo/queryInfo")
-//    @ResponseBody
-//    public ApiResponses<Document> queryInfo(@RequestParam String user, @RequestParam String dbName, @RequestParam String pwd) {
-//
-//        Document dbInfo;
-//        try {
-//            MongoTemplate myTemplate = null;
-//
-//            MongoDatabase mongoDatabase = myTemplate.getDb();
-//            Map<String, Object> statsArguments = new BasicDBObject();
-//            statsArguments.put(MongoConstant.COMMAND_DB_STATS, 1);
-//            statsArguments.put(MongoConstant.SCALE_KEY, 1024 * 1024);
-//            BasicDBObject statsCommand = new BasicDBObject(statsArguments);
-//            dbInfo = mongoDatabase.runCommand(statsCommand);
-//            log.info(dbInfo.toJson());
-//        } catch (Exception e) {
-//            return ApiResponses.failure(ErrorCodeEnum.UNKNOW_ERR, e);
-//
-//        }
-//
-//        return ApiResponses.success(dbInfo);
-//    }
+
+    /**
+     * 返回库的集合信息
+     */
+    @ApiOperation(value = "查看集合信息", notes = "全部显示所有集合")
+    @RequestMapping(value = "/collectionInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryInfo() {
+
+        Map<String, Object> data = new HashMap<>();
+
+        try {
+            List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100);
+
+            for (AppDBInfo appDBInfo : allAppDBInfo) {
+                Map<String, String> collectionInfo = mongoDBService.getCollectionInfo(appDBInfo);
+                data.put(appDBInfo.getDbName(), collectionInfo);
+            }
+
+        } catch (Exception e) {
+            log.error("collectionInfo", e);
+            return ReturnApi.error("fail");
+
+        }
+
+        return ReturnApi.success("success", data);
+    }
 
 
     /**

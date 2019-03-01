@@ -18,6 +18,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/file")
+@Api("文件操作相关的api")
 public class FileController {
 
     @Autowired
@@ -37,6 +41,7 @@ public class FileController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "直接二进制流下载文件", notes = "直接二进制流下载文件")
     @GetMapping("/download")
     public String download(HttpServletRequest request, HttpServletResponse response) {
         String appName = request.getParameter("appName");

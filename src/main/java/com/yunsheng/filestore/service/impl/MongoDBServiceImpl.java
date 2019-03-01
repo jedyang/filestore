@@ -2,6 +2,7 @@ package com.yunsheng.filestore.service.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
+import com.mongodb.MongoSecurityException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +76,28 @@ public class MongoDBServiceImpl implements MongoDBService {
         result.setDataSize(String.valueOf(dbInfo.get("dataSize")));
         result.setStorageSize(String.valueOf(dbInfo.get("storageSize")));
         result.setFileSize(String.valueOf(dbInfo.get("fileSize")));
+
+        return result;
+    }
+
+    @Override
+    public Map<String, String> getCollectionInfo(AppDBInfo appDBInfo) {
+        Map<String, String> result = new HashMap<>();
+        try {
+            MongoDatabase mongoDatabase = baseMongoService.getMongoDatabase(appDBInfo.getDbName());
+            MongoCollection<Document> filesColl = mongoDatabase.getCollection("fs.files");
+            long filesCount = filesColl.count();
+
+            MongoCollection<Document> chunksColl = mongoDatabase.getCollection("fs.chunks");
+            long chunksCount = chunksColl.count();
+
+            result.put("fs.files", String.valueOf(filesCount));
+            result.put("fs.chunks", String.valueOf(chunksCount));
+        } catch (MongoSecurityException e) {
+            log.error("数据库鉴权失败:" + appDBInfo.getDbName());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
         return result;
     }
