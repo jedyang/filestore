@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,21 @@ public class DBInfoController {
         return responses;
     }
 
+    // 数据库详情页
+    @RequestMapping(value = "/dbDetail/{dbName}", method = RequestMethod.GET)
+    public ModelAndView dbDetail(@PathVariable("dbName") String dbName) {
+        log.info("dbDetail page:" + dbName);
+
+        ModelAndView view = new ModelAndView();
+
+        view.setViewName("/pages/filestore/dbDetail");
+
+//        List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo();
+//
+//        view.addObject("allAppDBInfo", allAppDBInfo);
+        return view;
+    }
+
     /**
      * 返回库的集合信息
      */
@@ -123,23 +139,33 @@ public class DBInfoController {
 
 
     /**
-     * 返回库的信息
+     * 返回库数据的详细信息共画图使用
      * @return
      */
-//    @RequestMapping("/query")
-//    @ResponseBody
-//    public Integer getInfo() {
-//        MongoDatabase mongoDatabase = baseMongoService.getMongoDatabaseByAdmin("paas_test");
-//        Map<String, Object> statsArguments = new BasicDBObject();
-//        statsArguments.put(MongoConstant.COMMAND_DB_STATS, 1);
-//        statsArguments.put(MongoConstant.SCALE_KEY, 1024*1024);
-//        BasicDBObject statsCommand = new BasicDBObject(statsArguments);
-//        Document statsDocument = mongoDatabase.runCommand(statsCommand);
-//        if (statsDocument == null){
-//            return 0;
-//        }
-//        return statsDocument.getInteger(MongoConstant.RESULT_STORAGE_SIZE);
-//    }
+    @ApiOperation(value = "图表所需信息", notes = "返回数据供ecchart画图使用")
+    @RequestMapping("/loadChartData")
+    @ResponseBody
+    public Map<String, Object> loadChartData() {
+        Map<String, Object> data = new HashMap<>();
+
+        List<String> xAxisData = new ArrayList<>();
+        xAxisData.add("01-01");
+        xAxisData.add("01-02");
+        xAxisData.add("01-03");
+        xAxisData.add("01-04");
+        xAxisData.add("01-05");
+        data.put("xAxis", xAxisData);
+
+        List<Long> seriesData = new ArrayList<>();
+        seriesData.add(10000L);
+        seriesData.add(9990L);
+        seriesData.add(9980L);
+        seriesData.add(12000L);
+        seriesData.add(11000L);
+        data.put("series", seriesData);
+
+        return ReturnApi.success("success", data);
+    }
 
 
 }
