@@ -69,14 +69,13 @@ public class DBInfoController {
 
                 AppDBInfo detail = null;
                 try {
-                    detail = mongoDBService.getDbDetail(appDBInfo);
+                    detail = mongoDBService.getDbDetail(appDBInfo.getDbName());
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;
                 }
                 appDBInfo.setStorageSize(detail.getStorageSize());
                 appDBInfo.setDataSize(detail.getDataSize());
-                appDBInfo.setFileSize(detail.getFileSize());
             }
 
         } catch (Exception e) {
@@ -103,10 +102,9 @@ public class DBInfoController {
         ModelAndView view = new ModelAndView();
 
         view.setViewName("/pages/filestore/dbDetail");
+        AppDBInfo dbDetail = mongoDBService.getDbDetail(dbName);
 
-//        List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo();
-//
-//        view.addObject("allAppDBInfo", allAppDBInfo);
+        view.addObject("dbDetail", dbDetail);
         return view;
     }
 
@@ -140,28 +138,18 @@ public class DBInfoController {
 
     /**
      * 返回库数据的详细信息共画图使用
-     * @return
      */
     @ApiOperation(value = "图表所需信息", notes = "返回数据供ecchart画图使用")
-    @RequestMapping("/loadChartData")
+    @RequestMapping(value = "/loadChartData/{dbName}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> loadChartData() {
+    public Map<String, Object> loadChartData(@PathVariable(name = "dbName") String dbName) {
         Map<String, Object> data = new HashMap<>();
 
-        List<String> xAxisData = new ArrayList<>();
-        xAxisData.add("01-01");
-        xAxisData.add("01-02");
-        xAxisData.add("01-03");
-        xAxisData.add("01-04");
-        xAxisData.add("01-05");
+        Map<String, List<String>> chartData = mongoDBService.getChartData(dbName);
+        List<String> xAxisData = chartData.get("xAxis");
         data.put("xAxis", xAxisData);
 
-        List<Long> seriesData = new ArrayList<>();
-        seriesData.add(10000L);
-        seriesData.add(9990L);
-        seriesData.add(9980L);
-        seriesData.add(12000L);
-        seriesData.add(11000L);
+        List<String> seriesData = chartData.get("series");
         data.put("series", seriesData);
 
         return ReturnApi.success("success", data);

@@ -14,8 +14,13 @@ public class AppDBInfo {
     private String appOwner;
     private String dataSize;
     private String storageSize;
-    private String fileSize;
 
     // 库下的表信息
     private List<Map> collInfos;
+
+    // 详细信息
+    private long count;
+    private long yesterDayCount;
+    private String  earliest; //最早上传时间
+
 }

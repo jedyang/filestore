@@ -59,7 +59,7 @@ public class BaseMongoService {
     /**
      * 获取commonDB库的连接
      */
-    public MongoCollection getCommonDbColl() {
+    public MongoDatabase getCommonDbDababase() {
 
         List<ServerAddress> addressList = getServerAddresses("");
 
@@ -77,9 +77,8 @@ public class BaseMongoService {
             }
         }
         MongoDatabase commonDBDatabase = mongoClient.getDatabase(CommonDbInfo.COMMON_DB_NAME);
-        MongoCollection commonDBCollection = commonDBDatabase.getCollection(CommonDbInfo.COMMON_COLLECTION_NAME);
 
-        return commonDBCollection;
+        return commonDBDatabase;
     }
 
 

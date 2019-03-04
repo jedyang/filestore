@@ -26,6 +26,7 @@
           <cite>应用详情</cite></a>
       </span>
 </div>
+<input  th:value="${dbDetail.dbName}" id="dbName">
 
 <div class="weadmin-body">
     <blockquote class="layui-elem-quote font16">信息统计</blockquote>
@@ -39,23 +40,23 @@
             <tbody>
             <tr>
                 <th width="30%">文件总数</th>
-                <td><span id="lbServerName">http://127.0.0.1/</span></td>
+                <td><span th:text="${dbDetail.count}"></span></td>
             </tr>
             <tr>
                 <td>磁盘占用</td>
-                <td>192.168.1.1</td>
+                <td><span th:text="${dbDetail.storageSize}"></span></td>
             </tr>
             <tr>
                 <td>昨日新增</td>
-                <td>github.com</td>
+                <td><span th:text="${dbDetail.yesterDayCount}"></span></td>
             </tr>
             <tr>
                 <td>最早上传</td>
-                <td>80</td>
+                <td><span th:text="${dbDetail.earliest}"></span></td>
             </tr>
             <tr>
                 <td>存储策略</td>
-                <td>D:\Web\WeAdmin\</td>
+                <td>TODO</td>
             </tr>
             </tbody>
         </table>
@@ -113,19 +114,18 @@
 
     myChart.showLoading();
     //通过Ajax获取数据
+    var dbName = $("#dbName").val();
     $.ajax({
                type: "post",
                async: true, //异步执行
-               url: "/dbinfo/loadChartData",
+               url: "/dbinfo/loadChartData/" + dbName,
                dataType: "json", //返回数据形式为json
                success: function (json) {
 
                    if (json) {
-//                       fetchData(function (data) {
                        myChart.hideLoading();
                        option.xAxis.data = json.result.xAxis;
                        option.series[0].data = json.result.series;
-//                       });
                        // 使用刚指定的配置项和数据显示图表。
                        myChart.setOption(option);
                    }
