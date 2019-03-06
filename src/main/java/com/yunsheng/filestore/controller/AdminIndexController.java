@@ -16,7 +16,6 @@ public class AdminIndexController {
         log.info("index");
         return "index";
     }
-
     @RequestMapping(value = "/pages/{page}")
     public String page(@PathVariable("page") String page) {
         log.info("1show:" + page);
@@ -52,5 +51,4 @@ public class AdminIndexController {
         log.info("5show:" + page);
         return "pages/order/" + page;
     }
-
 }

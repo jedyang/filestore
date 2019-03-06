@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="/static/login/css/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/login/css/demo.css"/>
+    <!--必要样式-->
+    <link rel="stylesheet" type="text/css" href="/static/login/css/component.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css"/>
+    <!--<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>-->
+    <script type="text/javascript" src="/static/layui/layui.js"></script>
+</head>
+<body>
+<div class="container demo-1">
+    <div class="content">
+        <div id="large-header" class="large-header">
+            <canvas id="demo-canvas"></canvas>
+            <div class="logo_box">
+                <h3>文件共享服务平台</h3>
+                <form method="post" class="layui-form">
+                    <div class="input_outer">
+                        <span class="u_user"></span>
+                        <input name="username" class="text" style="color: #FFFFFF !important"
+                               required type="text" placeholder="请输入账户">
+                    </div>
+                    <div class="input_outer">
+                        <span class="us_uer"></span>
+                        <input name="password" class="text"
+                               style="color: #FFFFFF !important; position:absolute; z-index:100;"
+                               required type="password" placeholder="请输入密码">
+                    </div>
+                    <div class="mb2">
+                        <!-- 这里必须加loginin 是weadmin框架登录登出需要-->
+                        <a class="act-but submit"
+                           style="color: #FFFFFF" lay-submit lay-filter="login">登录
+                        </a>
+                    </div>
+                </form>
+                <div>
+                    <a id="register" style="color: #00F7DE">自助注册</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/login/js/TweenLite.min.js"></script>
+<script src="/static/login/js/EasePack.min.js"></script>
+<script src="/static/login/js/rAF.js"></script>
+<script src="/static/login/js/demo-1.js"></script>
+
+<script type="text/javascript">
+    layui.extend({
+                     admin: '/static/js/admin'
+                 });
+    layui.use(['form'], function () {
+        var form = layui.form
+            , $ = layui.$;
+        //监听提交
+        form.on('submit(login)', function (data) {
+            $.ajax({
+                       url: "api/loginCheck",
+                       data: JSON.stringify(data.field),
+                       type: "POST",
+                       dataType: "JSON",
+                       contentType: "application/json",
+                       success: function (data) {
+                           console.log("ajax");
+                           if (data.success) {
+                               window.location.href = './index';
+                               return false;
+                           } else {
+                               layer.msg(data.msg);
+                           }
+                       },
+                       error: function (result) {
+                           alert(result);
+                       }
+                   })
+            return false;
+        });
+    });
+
+    //登录函数
+    function login() {
+        var username = $("input[name='username']").val();
+        var password = $("input[name='password']").val();
+        if (username == "" || username == null || username == undefined) {
+            layer.msg("用户名不能为空");
+            return;
+        }
+        if (password == "" || password == null || password == undefined) {
+            layer.msg("密码不能为空");
+            return;
+        }
+
+        var params = {"username": username, "password": password};
+        console.log("username:" + username + ",password:" + password)
+        window.location.href = './index';
+        //            $.ajax({
+        //                       url: "api/loginCheck",
+        //                       data: JSON.stringify(params),
+        //                       async:false,
+        //                       type: "POST",
+        //                       dataType: "JSON",
+        //                       contentType: "application/json",
+        //                       success: function (data) {
+        //                           console.log("ajax");
+        //                           if (data.success) {
+        //                               window.location.href = './index';
+        //                               return false;
+        //                           } else {
+        //                               layer.msg(data.msg);
+        //                           }
+        //                       },
+        //                       error: function (result) {
+        //                           alert(result);
+        //                       }
+        //                   })
+    }
+
+    //加载弹出层组件
+    layui.use('layer', function () {
+
+        var layer = layui.layer;
+
+        //登录的点击事件
+        //        $("#sub").on("click", function () {
+        //            console.log("点击登录");
+        //            login();
+        //        })
+
+        //        $("body").keydown(function () {
+        //            if (event.keyCode == "13") {
+        //                login();
+        //            }
+        //        })
+
+        //注册的点击事件
+        $("#register").on("click", function () {
+            console.log("点击注册");
+            // 弹出页面
+            layer.open({
+                           title: '用户注册',
+                           type: 2,
+                           area: ['400px', '400px'],
+                           content: '/pages/register.html', //传一个html页面
+                           btn: ['关闭'],
+                       });
+        })
+
+    })
+</script>
+</body>
+</html>

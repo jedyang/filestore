@@ -4,10 +4,14 @@ import com.yunsheng.filestore.entity.AppDBInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface MongoDBService {
 
-    List<AppDBInfo> getAllAppDBInfo(Integer page, Integer limit);
+    /**
+     * 分页查询应用列表
+     */
+    List<AppDBInfo> getAllAppDBInfo(Integer page, Integer limit, Set<String> dbs);
 
     long countAllAppDB();
 

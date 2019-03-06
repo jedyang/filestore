@@ -16,6 +16,7 @@ public class ReturnApi {
      */
     public static Map<String, Object> success(String msg, Object result) {
         Map<String, Object> map = new HashMap();
+        map.put("success", true);
         map.put("status", 1);
         map.put("msg", msg);
         map.put("result", result);
@@ -29,6 +30,7 @@ public class ReturnApi {
      */
     public static Map<String, Object> error(String msg) {
         Map<String, Object> map = new HashMap();
+        map.put("success", false);
         map.put("status", 0);
         map.put("msg", msg);
         return map;
@@ -41,6 +43,7 @@ public class ReturnApi {
      */
     public static Map<String, Object> hasException(String msg) {
         Map<String, Object> map = new HashMap();
+        map.put("success", false);
         map.put("status", 2);
         map.put("msg", msg);
         return map;

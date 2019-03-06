@@ -4,7 +4,10 @@ import com.yunsheng.filestore.common.responses.ApiResponses;
 import com.yunsheng.filestore.common.responses.ReturnApi;
 import com.yunsheng.filestore.entity.AppDBInfo;
 import com.yunsheng.filestore.service.MongoDBService;
+import com.yunsheng.filestore.service.PermissionService;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +39,10 @@ import lombok.extern.slf4j.Slf4j;
 public class DBInfoController {
 
     @Autowired
-    MongoDBService mongoDBService;
+    private MongoDBService mongoDBService;
+
+    @Autowired
+    private PermissionService permissionService;
 
     @RequestMapping(value = "/filestore/{page}", method = RequestMethod.GET)
     public ModelAndView filestore(@PathVariable("page") String page) {
@@ -45,9 +52,6 @@ public class DBInfoController {
 
         view.setViewName("/pages/filestore/" + page);
 
-//        List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo();
-//
-//        view.addObject("allAppDBInfo", allAppDBInfo);
         return view;
     }
 
@@ -62,7 +66,19 @@ public class DBInfoController {
         List<AppDBInfo> allAppDBInfo;
         long count = 0;
         try {
-            allAppDBInfo = mongoDBService.getAllAppDBInfo(page, limit);
+
+            // 查看登录的用户
+            Subject subject = SecurityUtils.getSubject();
+            // 如果是管理员权限的，不用传userName，查询全部
+            Set<String> permissions = null;
+            boolean admin = subject.hasRole("admin");
+            if (!admin) {
+                String userName = (String) subject.getPrincipal();
+                // TODO 拿权限列表，权限列表就是有权限的库的列表
+                permissions = permissionService.getPermissions(userName);
+            }
+
+            allAppDBInfo = mongoDBService.getAllAppDBInfo(page, limit, permissions);
             count = mongoDBService.countAllAppDB();
 
             for (AppDBInfo appDBInfo : allAppDBInfo) {
@@ -119,7 +135,7 @@ public class DBInfoController {
         Map<String, Object> data = new HashMap<>();
 
         try {
-            List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100);
+            List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100, null);
 
             for (AppDBInfo appDBInfo : allAppDBInfo) {
                 Map<String, String> collectionInfo = mongoDBService.getCollectionInfo(appDBInfo);

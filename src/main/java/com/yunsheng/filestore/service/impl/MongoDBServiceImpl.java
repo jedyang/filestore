@@ -1,5 +1,6 @@
 package com.yunsheng.filestore.service.impl;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
 import com.mongodb.MongoSecurityException;
@@ -25,6 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +38,7 @@ public class MongoDBServiceImpl implements MongoDBService {
     private BaseMongoService baseMongoService;
 
     @Override
-    public List<AppDBInfo> getAllAppDBInfo(Integer page, Integer limit) {
+    public List<AppDBInfo> getAllAppDBInfo(Integer page, Integer limit, Set<String> dbNames) {
 
         List<AppDBInfo> result = new ArrayList<>();
         // 从commonDB获取库的基本信息
@@ -44,6 +46,16 @@ public class MongoDBServiceImpl implements MongoDBService {
         MongoCollection commonDBCollection = commonDBDatabase.getCollection(CommonDbInfo.COMMON_COLLECTION_NAME);
 
         BasicDBObject filter = new BasicDBObject();
+        if (null != dbNames && dbNames.size() > 0){
+            BasicDBList dbList = new BasicDBList();
+            for (String s : dbNames){
+                BasicDBObject one = new BasicDBObject();
+                one.append("dbName", s);
+                dbList.add(one);
+            }
+
+            filter.put("$or", dbList);
+        }
         // 前台传过来的page是从1开始
         FindIterable<Document> findIterable = commonDBCollection.find(filter).skip((page - 1) * limit).limit(limit);
         findIterable.forEach(new Block<Document>() {
