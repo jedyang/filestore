@@ -66,7 +66,7 @@ public class FilestoreApplicationTests {
 //        Map<String, String> collectionInfo = mongoDBService.getCollectionInfo(appDBInfo);
 //        log.info(collectionInfo.toString());
 
-        List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100);
+        List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100, null);
 
         List<Map> result = new ArrayList<>();
         for (AppDBInfo appDBInfo : allAppDBInfo) {

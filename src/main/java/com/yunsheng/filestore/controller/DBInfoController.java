@@ -3,6 +3,8 @@ package com.yunsheng.filestore.controller;
 import com.yunsheng.filestore.common.responses.ApiResponses;
 import com.yunsheng.filestore.common.responses.ReturnApi;
 import com.yunsheng.filestore.entity.AppDBInfo;
+import com.yunsheng.filestore.entity.ApplyInfo;
+import com.yunsheng.filestore.service.ApplyService;
 import com.yunsheng.filestore.service.MongoDBService;
 import com.yunsheng.filestore.service.PermissionService;
 
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,9 +31,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
-//import org.springframework.data.mongodb.core.MongoTemplate;
-//import org.springframework.data.mongodb.core.query.Criteria;
-//import org.springframework.data.mongodb.core.query.Query;
 
 @Controller
 @Slf4j
@@ -43,6 +43,9 @@ public class DBInfoController {
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private ApplyService applyService;
 
     @RequestMapping(value = "/filestore/{page}", method = RequestMethod.GET)
     public ModelAndView filestore(@PathVariable("page") String page) {
@@ -172,4 +175,67 @@ public class DBInfoController {
     }
 
 
+    /**
+     * 数据库申请
+     */
+    @ApiOperation(value = "业务存储服务申请", notes = "业务存储服务申请")
+    @RequestMapping(value = "/apply", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> apply(@RequestBody ApplyInfo applyInfo) {
+        Map<String, Object> data = new HashMap<>();
+
+        log.info(applyInfo.toString());
+
+        int i = applyService.insertApply(applyInfo);
+        if (i == 0) {
+            return ReturnApi.error("申请失败，请联系管理员");
+        }
+
+        return ReturnApi.success("申请成功，请等待审批", data);
+    }
+
+    /**
+     * 数据库申请
+     */
+    @ApiOperation(value = "审核业务存储服务申请", notes = "审核业务存储服务申请")
+    @RequestMapping(value = "/updataApplyInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updataApplyInfo(@RequestBody ApplyInfo applyInfo) {
+
+        log.info(applyInfo.toString());
+
+        long i = applyService.updateApply(applyInfo);
+        if (i == 0) {
+            return ReturnApi.error("审核失败");
+        }
+
+        return ReturnApi.success("审核完成", null);
+    }
+
+
+    /**
+     * 数据库申请查询
+     */
+    @ApiOperation(value = "查询业务存储服务申请", notes = "查询业务存储服务申请")
+    @RequestMapping(value = "/queryApplyInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResponses<List<ApplyInfo>> queryApplyInfo() {
+        Map<String, Object> data = new HashMap<>();
+        // 查看登录的用户
+        Subject subject = SecurityUtils.getSubject();
+        String applyName = (String) subject.getPrincipal();
+        if (subject.hasRole("admin")) {
+            // 管理员全部查询
+            applyName = "";
+        }
+
+        List<ApplyInfo> applyInfos = applyService.queryApplyInfo(applyName);
+
+        ApiResponses<List<ApplyInfo>> responses = new ApiResponses<>();
+        responses.setCode(0);
+        responses.setMsg("success");
+        responses.setData(applyInfos);
+        responses.setCount(applyInfos.size());
+        return responses;
+    }
 }

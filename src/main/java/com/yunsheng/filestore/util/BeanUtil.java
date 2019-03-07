@@ -29,7 +29,11 @@ public class BeanUtil {
     Field[] fields = bean.getClass().getDeclaredFields();  
     for (Field field : fields) {  
       // 获取属性名  
-      String varName = field.getName();  
+      String varName = field.getName();
+      if ("id".equals(varName)){
+        // 不要管id
+        continue;
+      }
       // 修改访问控制权限  
       boolean accessFlag = field.isAccessible();  
       if (!accessFlag) {  

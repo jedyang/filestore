@@ -29,7 +29,7 @@ public class UploadInfoTask {
     public void yesterdayUpload() {
         log.info("统计昨天各库的上传数量");
         try {
-            List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100);
+            List<AppDBInfo> allAppDBInfo = mongoDBService.getAllAppDBInfo(0, 100, null);
 
             for (AppDBInfo appDBInfo : allAppDBInfo) {
                 boolean uploadDayInfo = mongoDBService.uploadDayInfo(appDBInfo.getDbName());

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>业务申请</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/weadmin.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">我的业务</a>
+        <a>
+          <cite>开通申请</cite></a>
+      </span>
+</div>
+
+<div class="weadmin-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="L_appName" class="layui-form-label">
+                <span class="we-red">*</span>应用简称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_appName" name="appName" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                非常重要，必须是英文
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="l_platform" class="layui-form-label">业务平台</label>
+            <div class="layui-input-block" id="l_platform">
+                <input type="radio" name="platform" value="690" title="690" checked>
+                <input type="radio" name="platform" value="1169" title="1169">
+                <input type="radio" name="platform" value="0" title="大共享">
+                <input type="radio" name="platform" value="1" title="地产">
+                <input type="radio" name="platform" value="2" title="金控">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                涉及费用结算，请谨慎选择
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_teamName" class="layui-form-label">
+                <span class="we-red">*</span>业务团队
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_teamName" name="teamName" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="L_userName" class="layui-form-label">
+                <span class="we-red">*</span>业务接口人
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_userName" name="userName" lay-verify="required"
+                       autocomplete="off" class="layui-input" placeholder="姓名">
+                <input type="text" name="userEmail" lay-verify="required|email"
+                       style="margin-top: 10px"
+                       placeholder="接口人邮箱" autocomplete="off" class="layui-input">
+                <input type="text" id="L_userPhone" name="userPhone" lay-verify="required|phone"
+                       style="margin-top: 10px"
+                       placeholder="接口人电话" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="space" class="layui-form-label">
+                <span class="we-red">*</span>存储空间
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="space" name="space" lay-verify="required|number"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                G&nbsp;&nbsp;&nbsp;涉及费用结算，请谨慎填写||需求存储空间大于1T，请提供服务器
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="storeLife" class="layui-form-label">
+                <span class="we-red">*</span>保存周期
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="storeLife" name="storeLife" lay-verify="required|number"
+                       autocomplete="off" value="12" class="layui-input">
+            </div>
+
+            <div class="layui-form-mid layui-word-aux">
+                月
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">业务说明</label>
+            <div class="layui-input-block" style="width: 300px">
+                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button id="applyBtn" class="layui-btn" lay-submit lay-filter="formApply">立即提交
+                </button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>-->
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+<!--<script src="/static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>-->
+
+<script>
+    // 面包屑导航需要加载element模块
+    layui.use('element', function () {
+        //需要依赖element模块
+        var element = layui.element;
+        element.init()
+    });
+    // form模块
+    layui.use('form', function () {
+        var form = layui.form;
+        var $ = layui.$;
+
+        //监听提交
+        form.on('submit(formApply)', function (data) {
+            console.log("submit(formApply)")
+            $.ajax({
+                       url: "/dbinfo/apply",
+                       data: JSON.stringify(data.field),
+                       type: "POST",
+                       dataType: "JSON",
+                       contentType: "application/json",
+                       success: function (data) {
+                           // 按钮置灰
+                           $("#applyBtn").addClass("layui-btn-disabled");
+                           layer.msg(data.msg, {time:2000});
+                       },
+                       error: function (result) {
+                           alert(result);
+                       }
+                   });
+
+            return false;
+        });
+    });
+</script>
+</body>
+
+</html>
