@@ -32,6 +32,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/admin/**", "roles[admin]");
         //开放登陆、注册接口
         filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/pages/register.html", "anon");
         filterChainDefinitionMap.put("/api/loginCheck", "anon");
         filterChainDefinitionMap.put("/api/register", "anon");
         //其余接口一律拦截

@@ -10,3 +10,6 @@ db.applyInfo.createIndex({ "appName": 1 }, { unique: true });
 
 用户表对username加唯一索引:
 db.userInfo.createIndex({ "appName": 1 }, { unique: true });
+
+数据库连接信息表加唯一索引
+db.commonDB.createIndex({ "dbName": 1 }, { unique: true })

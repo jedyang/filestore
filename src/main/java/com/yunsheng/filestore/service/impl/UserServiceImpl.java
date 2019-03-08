@@ -32,9 +32,12 @@ public class UserServiceImpl implements UserService {
         try {
             doc = BeanUtil.bean2Document(one);
             userInfo.insertOne(doc);
+            MongoCollection<Document> roleInfo = commonDbDababase.getCollection("roleInfo");
+            // 注册用户默认为user角色
+            roleInfo.insertOne(new Document().append("username", one.getUsername()).append("rolename", "user"));
         } catch (IllegalAccessException e) {
             return 0;
-        } catch (MongoWriteException e){
+        } catch (MongoWriteException e) {
             int code = e.getError().getCode();
             return code;
         }
@@ -50,7 +53,7 @@ public class UserServiceImpl implements UserService {
         filter.append("username", username);
         FindIterable<Document> documents = userInfo.find(filter);
         Document first = documents.first();
-        if (null != first){
+        if (null != first) {
             try {
                 User user = new User();
                 BeanUtil.dbObject2Bean(first, user);

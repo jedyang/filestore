@@ -11,5 +11,10 @@ public interface ApplyService {
 
     List<ApplyInfo> queryApplyInfo(String applyName);
 
+    /**
+     * 通过或拒绝申请
+     * @param applyInfo
+     * @return
+     */
     long updateApply(ApplyInfo applyInfo);
 }

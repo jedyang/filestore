@@ -69,13 +69,14 @@
                        contentType: "application/json",
                        success: function (data) {
                            if (data.success) {
-                               layer.msg("注册成功");
-                               setTimeout(function () {
-                                   console.log("关闭自己");
+                               layer.msg("注册成功", {
+                                   icon: 1,
+                                   time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                               }, function () {
                                    // 关闭自己
                                    var index = parent.layer.getFrameIndex(window.name);
                                    parent.layer.close(index);
-                               }, 1000);
+                               });
                            } else {
                                layer.msg(data.msg);
                            }

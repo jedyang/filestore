@@ -117,10 +117,9 @@
             console.log(obj)
             var data = {};
             if (obj.event === 'yes') {
-                data = {
-                    "id": obj.data.id,
-                    "status": 1
-                }
+                // 审批页面
+                confirmApply(obj.data);
+                return;
 
             } else if (obj.event === 'no') {
                 data = {
@@ -144,6 +143,27 @@
         });
 
     });
+
+    // 审核通过
+    function confirmApply(apply) {
+        layui.layer.open({
+                             title: "申请确认",
+                             type: 2,
+                             content: "./confirm.html",//弹出层页面
+                             area: ['500px', '240px'],
+                             success: function (layero, index) {
+                                 var body = layui.layer.getChildFrame('body', index);
+                                 if (apply){
+                                     // 取到弹出层里的元素，并把编辑的内容放进去
+                                     body.find("#id").val(apply.id);  //将选中的数据的id传到编辑页面的隐藏域，便于根据ID修改数据
+                                     body.find("#applyName").val(apply.applyName);
+                                     // 记得重新渲染表单
+//                                     form.render();
+                                 }
+                             }
+                         });
+
+    }
 </script>
 </body>
 

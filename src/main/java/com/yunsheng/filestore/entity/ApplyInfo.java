@@ -20,6 +20,8 @@ public class ApplyInfo {
 
     // 0:申请中，1：通过  2：拒绝
     private int status;
+    // mongo连接地址
+    private String ips;
 
 
 }

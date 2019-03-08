@@ -5,6 +5,7 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.yunsheng.filestore.entity.Permission;
 import com.yunsheng.filestore.service.BaseMongoService;
 import com.yunsheng.filestore.service.PermissionService;
 
@@ -39,5 +40,12 @@ public class PermissionServiceImpl implements PermissionService {
         });
 
         return result;
+    }
+
+    @Override
+    public void insertOne(Permission permission) {
+        MongoDatabase commonDbDababase = baseMongoService.getCommonDbDababase();
+        MongoCollection<Document> permissionInfo = commonDbDababase.getCollection("permissionInfo");
+        permissionInfo.insertOne(new Document().append("permission", permission.getPermission()).append("username", permission.getUsername()));
     }
 }

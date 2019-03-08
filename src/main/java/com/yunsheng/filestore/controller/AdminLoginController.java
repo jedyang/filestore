@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -29,7 +30,7 @@ public class AdminLoginController {
 
     @RequestMapping(value = "/login")
     public String login() {
-        return "login1";
+        return "login";
     }
 
     /**
@@ -68,6 +69,7 @@ public class AdminLoginController {
     /**
      * 用户注册
      */
+    @ApiOperation(value = "用户注册", notes = "用户注册")
     @RequestMapping(value = "/api/register", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> register(@RequestBody User params) {

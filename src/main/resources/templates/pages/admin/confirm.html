@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>确认审核页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+
+
+<!-- 确认审核页面 -->
+<form class="layui-form" style="width:80%;">
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <div class="layui-input-block">
+            <!-- 使用隐藏域用于保存编辑项的ID值，便于提交修改 -->
+            <input type="hidden" id="id" name="id">
+            <input type="hidden" id="status" name="status" value="1">
+            <input type="hidden" id="applyName" name="applyName">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-row layui-col-xs12"><label
+            class="layui-form-label">ips</label>
+        <div class="layui-input-block"><input type="text" name="ips" class="layui-input"
+        ></div>
+    </div>
+
+
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-m" lay-submit="" lay-filter="confirm">确定通过</button>
+            <button type="button" class="layui-btn layui-btn-m layui-btn-primary cancle_btn">取消
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+    // form模块
+    layui.use('form', function () {
+        var form = layui.form;
+        var $ = layui.$;
+
+        //监听提交
+        form.on('submit(confirm)', function (data) {
+            console.log("submit(confirm):" + data.field)
+            $.ajax({
+                       url: "/dbinfo/updataApplyInfo",
+                       data: JSON.stringify(data.field),
+                       type: "POST",
+                       dataType: "JSON",
+                       contentType: "application/json",
+                       success: function (data) {
+                           layer.msg(data.msg, {time: 2000}, function () {
+                               // 关闭窗口
+                               var index = parent.layer.getFrameIndex(window.name);
+                               parent.layer.close(index);
+                           });
+                       },
+                       error: function (result) {
+                           alert(result);
+                       }
+                   });
+
+            return false;
+        });
+    });
+</script>
+
+</body>
+
+</html>
