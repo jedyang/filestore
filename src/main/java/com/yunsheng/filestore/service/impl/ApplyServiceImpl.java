@@ -27,6 +27,9 @@ import java.util.List;
 
 import javax.management.Query;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service("applyService")
 public class ApplyServiceImpl implements ApplyService {
 
@@ -87,31 +90,36 @@ public class ApplyServiceImpl implements ApplyService {
     public long updateApply(ApplyInfo applyInfo) {
         MongoDatabase commonDbDababase = baseMongoService.getCommonDbDababase();
 
+        if (1 == applyInfo.getStatus()) {
+            // 如果是同意，在commonDB中增加一条数据库连接信息
+            MongoCollection<Document> commonDBCol = commonDbDababase.getCollection("commonDB");
+            Document doc = new Document();
+            doc.append("appKey", applyInfo.getAppName())
+                    .append("dbName", applyInfo.getAppName())
+                    .append("ips", applyInfo.getIps()).append("maxSize", "").append("pwd", applyInfo.getPasswd()).append("user", applyInfo.getAppName());
 
-        // 如果是同意，在commonDB中增加一条数据库连接信息
-        MongoCollection<Document> commonDBCol = commonDbDababase.getCollection("commonDB");
-        Document doc = new Document();
-        doc.append("appKey", applyInfo.getAppName())
-                .append("dbName", applyInfo.getAppName())
-                .append("ips", applyInfo.getIps()).append("maxSize", "").append("pwd", "Hxd7123").append("usernamne", applyInfo.getAppName());
+            try {
+                commonDBCol.insertOne(doc);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
 
-        try {
-            commonDBCol.insertOne(doc);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
+            // 权限表，增加权限
+            Permission permission = new Permission();
+            permission.setPermission(applyInfo.getAppName());
+            permission.setUsername(applyInfo.getApplyName());
+            permissionService.insertOne(permission);
+
+            // 新建库，新建用户。需使用数据库的admin用户权限
+            boolean user = baseMongoService.createUser(applyInfo.getIps(), applyInfo.getAppName(), applyInfo.getAppName(), applyInfo.getPasswd());
+            log.info("新建库，新建用户:" + applyInfo + ";result:" + user);
+
         }
 
-        // 权限表，增加权限
-        Permission permission = new Permission();
-        permission.setPermission(applyInfo.getAppName());
-        permission.setUsername(applyInfo.getApplyName());
-        permissionService.insertOne(permission);
-
         MongoCollection<Document> applyInfoCol = commonDbDababase.getCollection("applyInfo");
-
         UpdateResult updateResult = applyInfoCol.updateOne(Filters.eq("_id", new ObjectId(applyInfo.getId())),
-                new Document("$set", new Document("status", applyInfo.getStatus())));
+                new Document("$set", new Document("status", applyInfo.getStatus())).append("$set", new Document("passwd", applyInfo.getPasswd())));
 
         return updateResult.getModifiedCount();
     }

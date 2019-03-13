@@ -80,62 +80,10 @@
         });
     });
 
-    //登录函数
-    function login() {
-        var username = $("input[name='username']").val();
-        var password = $("input[name='password']").val();
-        if (username == "" || username == null || username == undefined) {
-            layer.msg("用户名不能为空");
-            return;
-        }
-        if (password == "" || password == null || password == undefined) {
-            layer.msg("密码不能为空");
-            return;
-        }
-
-        var params = {"username": username, "password": password};
-        console.log("username:" + username + ",password:" + password)
-        window.location.href = './index';
-        //            $.ajax({
-        //                       url: "api/loginCheck",
-        //                       data: JSON.stringify(params),
-        //                       async:false,
-        //                       type: "POST",
-        //                       dataType: "JSON",
-        //                       contentType: "application/json",
-        //                       success: function (data) {
-        //                           console.log("ajax");
-        //                           if (data.success) {
-        //                               window.location.href = './index';
-        //                               return false;
-        //                           } else {
-        //                               layer.msg(data.msg);
-        //                           }
-        //                       },
-        //                       error: function (result) {
-        //                           alert(result);
-        //                       }
-        //                   })
-    }
-
     //加载弹出层组件
     layui.use('layer', function () {
-
         var layer = layui.layer;
         var $ = layui.$;
-
-        //登录的点击事件
-        //        $("#sub").on("click", function () {
-        //            console.log("点击登录");
-        //            login();
-        //        })
-
-        //        $("body").keydown(function () {
-        //            if (event.keyCode == "13") {
-        //                login();
-        //            }
-        //        })
-
         //注册的点击事件
         $("#register").on("click", function () {
             console.log("点击注册");
@@ -143,7 +91,7 @@
             layer.open({
                            title: '用户注册',
                            type: 2,
-                           area: ['400px', '400px'],
+                           area: ['400px', '300px'],
                            content: '/pages/register.html', //传一个html页面
                        });
         })

@@ -39,7 +39,7 @@ public class FilestoreApplicationTests {
 //    private static String[] transfer3 = {"hnmnew", "hmpsdk", "ssc", "dapp","cwgxyg", "dzsp", "gbtp", "hac1169", "hcdc", "hiface", "hopEmail", "hrrk", "hrssc", "isales",
 //            "oebs", "ppm", "sci", "scxwxxpt", "showcase", "xwehr", "yuntu", "test", "liip"};
 
-    private static String[] transfer3 = {"showcase"};
+    private static String[] transfer3 = {"paastest"};
 
     @Test
     public void upload() throws IOException {

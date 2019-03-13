@@ -150,13 +150,14 @@
                              title: "申请确认",
                              type: 2,
                              content: "./confirm.html",//弹出层页面
-                             area: ['500px', '240px'],
+                             area: ['500px', '400px'],
                              success: function (layero, index) {
                                  var body = layui.layer.getChildFrame('body', index);
                                  if (apply){
                                      // 取到弹出层里的元素，并把编辑的内容放进去
                                      body.find("#id").val(apply.id);  //将选中的数据的id传到编辑页面的隐藏域，便于根据ID修改数据
                                      body.find("#applyName").val(apply.applyName);
+                                     body.find("#appName").val(apply.appName);
                                      // 记得重新渲染表单
 //                                     form.render();
                                  }

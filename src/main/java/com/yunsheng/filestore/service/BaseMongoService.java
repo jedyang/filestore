@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,32 @@ public class BaseMongoService {
     @Value("${me.mongoAddress}")
     private String mongoAddress;
 
+    @Value("${me.adminPwd}")
+    private String adminPwd;
+
     private static final Map<String, MongoClient> mongoClientMap = new HashMap<String, MongoClient>();
 
 //    private static final Map<String, MongoTemplate> mongoTemplateMap = new HashMap<>();
+
+    public boolean createUser(String ips, String dbName, String userName, String passwd) {
+        MongoCredential mongoCredential = MongoCredential.createCredential("admin", "admin", adminPwd.toCharArray());
+        List<ServerAddress> addressList = getServerAddresses(ips);
+
+        MongoClient mongoClient = getMongoClient(addressList, mongoCredential);
+
+        // 不存在会自动新建
+        MongoDatabase database = mongoClient.getDatabase(dbName);
+
+        BasicDBObject createUserCommand = new BasicDBObject("createUser", userName)
+                .append("pwd", passwd)
+                .append("roles",
+                        Collections.singletonList(new BasicDBObject("role", "readWrite")
+                                .append("db", dbName)));
+
+        Document document = database.runCommand(createUserCommand);
+        Object ok = document.get("ok");
+        return 1.0 == (Double) ok;
+    }
 
     /**
      * 获取db对象
@@ -80,8 +104,6 @@ public class BaseMongoService {
 
         return commonDBDatabase;
     }
-
-
 
 
     /**

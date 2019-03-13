@@ -27,16 +27,35 @@
     <div class="layui-form-item layui-row layui-col-xs12">
         <div class="layui-input-block">
             <!-- 使用隐藏域用于保存编辑项的ID值，便于提交修改 -->
-            <input type="hidden" id="id" name="id">
-            <input type="hidden" id="status" name="status" value="1">
-            <input type="hidden" id="applyName" name="applyName">
+            <input type="hidden" id="id" name="id" disabled="true">
+            <input type="hidden" id="status" name="status" value="1" disabled="true">
+        </div>
+    </div>
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">申请人</label>
+        <div class="layui-input-block">
+            <input type="text" id="applyName" name="applyName" class="layui-input" disabled="true">
+        </div>
+    </div>
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">库名</label>
+        <div class="layui-input-block">
+            <input type="text" id="appName" name="appName" class="layui-input" disabled="true">
         </div>
     </div>
 
-    <div class="layui-form-item layui-row layui-col-xs12"><label
-            class="layui-form-label">ips</label>
-        <div class="layui-input-block"><input type="text" name="ips" class="layui-input"
-        ></div>
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">ips</label>
+        <div class="layui-input-block">
+            <input type="text" name="ips" class="layui-input" lay-verify="required">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-row layui-col-xs12">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+            <input type="text" name="passwd" class="layui-input" lay-verify="required">
+        </div>
     </div>
 
 

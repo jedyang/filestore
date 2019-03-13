@@ -4,16 +4,15 @@ import com.yunsheng.filestore.entity.AppDBInfo;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface MongoDBService {
 
     /**
      * 分页查询应用列表
      */
-    List<AppDBInfo> getAllAppDBInfo(Integer page, Integer limit, Set<String> dbs);
+    List<AppDBInfo> getAllAppDBInfo(Integer page, Integer limit, String dbs);
 
-    long countAllAppDB();
+    long countAllAppDB(String userName);
 
     // 获取一个库的详细信息
     AppDBInfo getDbDetail(String dbName);
@@ -26,4 +25,5 @@ public interface MongoDBService {
 
     // 获取曲线图所需数据
     Map<String, List<String>> getChartData(String dbName);
+
 }

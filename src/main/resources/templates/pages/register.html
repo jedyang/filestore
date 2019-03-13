@@ -22,14 +22,14 @@
     <div class="layui-form-item">
         <label class="layui-form-label">密码</label>
         <div class="layui-input-inline">
-            <input type="password" name="password" required lay-verify="required"
+            <input type="password" name="password" id="L_pass" required lay-verify="required|pass"
                    placeholder="请输入密码" autocomplete="off" class="layui-input" style="width: 200px">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">确认密码</label>
         <div class="layui-input-inline">
-            <input type="password" name="password" required lay-verify="required"
+            <input type="password" name="password" required lay-verify="required|repass"
                    placeholder="请再次输入密码" autocomplete="off" class="layui-input"
                    style="width: 200px">
         </div>
@@ -47,15 +47,26 @@
 
 <script src="/static/layui/layui.js"></script>
 <script>
-    // TODO
-    // 两次密码匹配
-    // 用户名冲突校验
 
     //Demo
     layui.use(['form', 'jquery', 'layer'], function () {
         var form = layui.form;
         var $ = layui.jquery;
         var layer = layui.layer;
+
+        // 两次密码匹配
+        //自定义验证规则
+        form.verify({
+                        pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                        repass: function (value) {
+                            var passvalue = $('#L_pass').val();
+                            if (value != passvalue) {
+                                return '两次输入的密码不一致!';
+                            }
+                        }
+                    });
+
+        // TODO 用户名冲突校验
 
         //监听提交
         form.on('submit(formDemo)', function (data) {

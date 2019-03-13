@@ -62,9 +62,11 @@ public class DBInfoController {
     /**
      * 返回库的信息
      */
+    @ApiOperation(value = "文件库信息列表", notes = "分页查询文件库信息列表")
     @GetMapping("/queryInfo")
     @ResponseBody
     public ApiResponses<List<AppDBInfo>> queryInfo(@RequestParam(name = "page") Integer page, @RequestParam(name = "limit") Integer limit) {
+        ApiResponses<List<AppDBInfo>> responses = new ApiResponses<>();
 
         List<AppDBInfo> allAppDBInfo;
         long count = 0;
@@ -72,17 +74,29 @@ public class DBInfoController {
 
             // 查看登录的用户
             Subject subject = SecurityUtils.getSubject();
+            String userName = (String) subject.getPrincipal();
             // 如果是管理员权限的，不用传userName，查询全部
-            Set<String> permissions = null;
+//            Set<String> permissions = null;
             boolean admin = subject.hasRole("admin");
-            if (!admin) {
-                String userName = (String) subject.getPrincipal();
-                // TODO 拿权限列表，权限列表就是有权限的库的列表
-                permissions = permissionService.getPermissions(userName);
+            if (admin) {
+                userName = "";
+                // 拿权限列表，权限列表就是有权限的库的列表
+//                permissions = permissionService.getPermissions(userName);
+//                if (null == permissions || permissions.size() == 0){
+//                    // 既不是admin用户，又没有任何库权限，直接返回
+//                    responses.setCode(0);
+//                    responses.setMsg("success");
+//                    responses.setCount(0);
+//                    return responses;
+//                }
             }
 
-            allAppDBInfo = mongoDBService.getAllAppDBInfo(page, limit, permissions);
-            count = mongoDBService.countAllAppDB();
+            allAppDBInfo = mongoDBService.getAllAppDBInfo(page, limit, userName);
+//            if (null != permissions){
+//                count = permissions.size();
+//            }else {
+                count = mongoDBService.countAllAppDB(userName);
+//            }
 
             for (AppDBInfo appDBInfo : allAppDBInfo) {
 
@@ -99,13 +113,11 @@ public class DBInfoController {
 
         } catch (Exception e) {
             log.error(e.getMessage());
-            ApiResponses<List<AppDBInfo>> responses = new ApiResponses<>();
             responses.setCode(1);
             responses.setMsg("fail");
             return responses;
 
         }
-        ApiResponses<List<AppDBInfo>> responses = new ApiResponses<>();
         responses.setCode(0);
         responses.setMsg("success");
         responses.setData(allAppDBInfo);
@@ -185,7 +197,10 @@ public class DBInfoController {
         Map<String, Object> data = new HashMap<>();
 
         log.info(applyInfo.toString());
-
+        // 当前登录的用户就是提申请的用户
+        Subject subject = SecurityUtils.getSubject();
+        String applyName = (String) subject.getPrincipal();
+        applyInfo.setApplyName(applyName);
         int i = applyService.insertApply(applyInfo);
         if (i == 0) {
             return ReturnApi.error("申请失败，请联系管理员");
@@ -195,7 +210,7 @@ public class DBInfoController {
     }
 
     /**
-     * 数据库申请
+     * 审核业务存储服务申请
      */
     @ApiOperation(value = "审核业务存储服务申请", notes = "审核业务存储服务申请")
     @RequestMapping(value = "/updataApplyInfo", method = RequestMethod.POST)

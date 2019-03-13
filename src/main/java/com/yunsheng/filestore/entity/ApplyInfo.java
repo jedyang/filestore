@@ -22,6 +22,7 @@ public class ApplyInfo {
     private int status;
     // mongo连接地址
     private String ips;
+    private String passwd;
 
 
 }
