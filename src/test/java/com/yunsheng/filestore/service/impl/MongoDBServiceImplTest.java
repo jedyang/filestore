@@ -22,13 +22,19 @@ public class MongoDBServiceImplTest {
 
     @Test
     public void uploadDayInfo() throws Exception {
-        mongoDBService.uploadDayInfo("showcase");
+//        mongoDBService.uploadDayInfo("showcase");
     }
 
     @Test
     public void getDbDetail() throws Exception {
         AppDBInfo showcase = mongoDBService.getDbDetail("showcase");
         log.info(showcase.toString());
+    }
+
+    @Test
+    public void countAllAppDB(){
+        long l = mongoDBService.countAllAppDB("");
+        log.info("l:" + l);
     }
 
 }

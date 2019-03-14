@@ -42,11 +42,11 @@ public class MongoDBServiceImpl implements MongoDBService {
         List<AppDBInfo> result = new ArrayList<>();
         // 从commonDB获取库的基本信息
         MongoDatabase commonDBDatabase = baseMongoService.getCommonDbDababase();
-        MongoCollection applyInfoCollection = commonDBDatabase.getCollection("applyInfo");
+        MongoCollection applyInfoCollection = commonDBDatabase.getCollection(CommonDbInfo.COMMON_COLLECTION_NAME);
 
         BasicDBObject filter = new BasicDBObject();
 
-        if (StringUtils.isNotBlank(userName)){
+        if (StringUtils.isNotBlank(userName)) {
             filter.put("applyName", userName);
         }
         // 前台传过来的page是从1开始
@@ -56,7 +56,7 @@ public class MongoDBServiceImpl implements MongoDBService {
             public void apply(Document o) {
                 log.info(o.toJson());
                 AppDBInfo one = new AppDBInfo();
-                one.setDbName(o.getString("appName"));
+                one.setDbName(o.getString("dbName"));
                 one.setAppOwner(o.getString("userName"));
                 // 只返回库名，安全起见不要返回用户名密码
                 result.add(one);
@@ -69,14 +69,14 @@ public class MongoDBServiceImpl implements MongoDBService {
     @Override
     public long countAllAppDB(String userName) {
         MongoDatabase commonDBDatabase = baseMongoService.getCommonDbDababase();
-        MongoCollection applyInfoCol = commonDBDatabase.getCollection("applyInfo");
+        MongoCollection<Document> applyInfoCol = commonDBDatabase.getCollection(CommonDbInfo.COMMON_COLLECTION_NAME);
 
         BasicDBObject filter = new BasicDBObject();
-        if (StringUtils.isNotBlank(userName)){
+        if (StringUtils.isNotBlank(userName)) {
             filter.put("applyName", userName);
         }
 
-        long count = applyInfoCol.count(filter);
+        long count = applyInfoCol.count();
         return count;
     }
 

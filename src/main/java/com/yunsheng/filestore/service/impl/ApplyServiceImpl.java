@@ -95,31 +95,32 @@ public class ApplyServiceImpl implements ApplyService {
             MongoCollection<Document> commonDBCol = commonDbDababase.getCollection("commonDB");
             Document doc = new Document();
             doc.append("appKey", applyInfo.getAppName())
+                    .append("applyName", applyInfo.getApplyName())
+                    .append("userName", applyInfo.getUserName())
                     .append("dbName", applyInfo.getAppName())
                     .append("ips", applyInfo.getIps()).append("maxSize", "").append("pwd", applyInfo.getPasswd()).append("user", applyInfo.getAppName());
 
             try {
                 commonDBCol.insertOne(doc);
+
+                // 权限表，增加权限
+                Permission permission = new Permission();
+                permission.setPermission(applyInfo.getAppName());
+                permission.setUsername(applyInfo.getApplyName());
+                permissionService.insertOne(permission);
+
+                // 新建库，新建用户。需使用数据库的admin用户权限
+                boolean user = baseMongoService.createUser(applyInfo.getIps(), applyInfo.getAppName(), applyInfo.getAppName(), applyInfo.getPasswd());
+                log.info("新建库，新建用户:" + applyInfo + ";result:" + user);
             } catch (Exception e) {
                 e.printStackTrace();
                 return 0;
             }
-
-            // 权限表，增加权限
-            Permission permission = new Permission();
-            permission.setPermission(applyInfo.getAppName());
-            permission.setUsername(applyInfo.getApplyName());
-            permissionService.insertOne(permission);
-
-            // 新建库，新建用户。需使用数据库的admin用户权限
-            boolean user = baseMongoService.createUser(applyInfo.getIps(), applyInfo.getAppName(), applyInfo.getAppName(), applyInfo.getPasswd());
-            log.info("新建库，新建用户:" + applyInfo + ";result:" + user);
-
         }
 
         MongoCollection<Document> applyInfoCol = commonDbDababase.getCollection("applyInfo");
         UpdateResult updateResult = applyInfoCol.updateOne(Filters.eq("_id", new ObjectId(applyInfo.getId())),
-                new Document("$set", new Document("status", applyInfo.getStatus())).append("$set", new Document("passwd", applyInfo.getPasswd())));
+                new Document("$set", new Document("status", applyInfo.getStatus())));
 
         return updateResult.getModifiedCount();
     }

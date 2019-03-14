@@ -53,7 +53,7 @@ public class DBInfoController {
 
         ModelAndView view = new ModelAndView();
 
-        view.setViewName("/pages/filestore/" + page);
+        view.setViewName("pages/filestore/" + page);
 
         return view;
     }

@@ -123,7 +123,7 @@ public class BaseMongoService {
     /**
      * 获取mongos地址的ServerAddress集合,入参为null,则返回默认地址 host1:port1,host2:port2,...
      */
-    private List<ServerAddress> getServerAddresses(String addressStr) {
+    public List<ServerAddress> getServerAddresses(String addressStr) {
         // 如果为空，使用默认的
         if (StringUtils.isBlank(addressStr)) {
             addressStr = mongoAddress;

@@ -150,7 +150,7 @@
                              title: "申请确认",
                              type: 2,
                              content: "./confirm.html",//弹出层页面
-                             area: ['500px', '400px'],
+                             area: ['500px', '450px'],
                              success: function (layero, index) {
                                  var body = layui.layer.getChildFrame('body', index);
                                  if (apply){
@@ -158,6 +158,7 @@
                                      body.find("#id").val(apply.id);  //将选中的数据的id传到编辑页面的隐藏域，便于根据ID修改数据
                                      body.find("#applyName").val(apply.applyName);
                                      body.find("#appName").val(apply.appName);
+                                     body.find("#userName").val(apply.userName);
                                      // 记得重新渲染表单
 //                                     form.render();
                                  }

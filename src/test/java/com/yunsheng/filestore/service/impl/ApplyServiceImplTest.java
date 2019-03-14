@@ -34,7 +34,7 @@ public class ApplyServiceImplTest {
         applyInfo.setAppName("paa1");
         applyInfo.setId("5c80c5ff692a8522c809cb48");
         applyInfo.setStatus(10);
-        applyService.updateApply(applyInfo);
+//        applyService.updateApply(applyInfo);
     }
 
 }

@@ -20,7 +20,7 @@ public class UploadInfoTaskTest {
 
     @Test
     public void yesterdayUpload() throws Exception {
-        uploadInfoTask.yesterdayUpload();
+//        uploadInfoTask.yesterdayUpload();
     }
 
 }
