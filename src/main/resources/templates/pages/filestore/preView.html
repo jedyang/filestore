@@ -66,7 +66,11 @@
 
 </div>
 <script src="/static/layui/layui.js" charset="utf-8"></script>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+    // 获取生产和测试环境的不同url
+    var preUrl = [[${preUrl}]];
+    console.log("preUrl:" + preUrl);
+
     // 面包屑导航需要加载element模块
     layui.use('element', function () {
         //需要依赖element模块
@@ -81,7 +85,7 @@
         //监听提交
         form.on('submit(formSearch)', function (data) {
             console.log("submit(formSearch)")
-            var url = "/api/oss/v1/fileopt/findFile/"
+            var url = preUrl + "/api/oss/v1/fileopt/findFile/"
                       + data.field.fileId + "?appName=" + data.field.appName + "&&needData=64";
             $.ajax({
                        "url": url,

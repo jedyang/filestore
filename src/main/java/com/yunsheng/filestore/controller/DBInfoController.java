@@ -11,6 +11,7 @@ import com.yunsheng.filestore.service.PermissionService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,16 +43,18 @@ public class DBInfoController {
     private MongoDBService mongoDBService;
 
     @Autowired
-    private PermissionService permissionService;
-
-    @Autowired
     private ApplyService applyService;
+
+    @Value("$(me.preUrl)")
+    private String preUrl;
 
     @RequestMapping(value = "/filestore/{page}", method = RequestMethod.GET)
     public ModelAndView filestore(@PathVariable("page") String page) {
         log.info("6show:" + page);
 
         ModelAndView view = new ModelAndView();
+
+        view.addObject("preUrl", preUrl);
 
         view.setViewName("pages/filestore/" + page);
 
@@ -95,7 +98,7 @@ public class DBInfoController {
 //            if (null != permissions){
 //                count = permissions.size();
 //            }else {
-                count = mongoDBService.countAllAppDB(userName);
+            count = mongoDBService.countAllAppDB(userName);
 //            }
 
             for (AppDBInfo appDBInfo : allAppDBInfo) {
