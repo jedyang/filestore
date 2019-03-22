@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>文件预览</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/weadmin.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">资源使用</a>
+        <a>
+          <cite>文件预览</cite></a>
+      </span>
+</div>
+
+<div class="weadmin-body">
+    <blockquote class="layui-elem-quote font16">目前仅支持小于4M的图片文件预览</blockquote>
+    <div>
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="L_appName" class="layui-form-label">
+                    <span class="we-red">*</span>应用简称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_appName" name="appName" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_fileId" class="layui-form-label">
+                    <span class="we-red">*</span>文件Id
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_fileId" name="fileId" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formSearch">查询</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="picDiv">
+        <img id='picPreView'
+             width='360' height='360'
+             style='border:none; padding-right:50px;'/>
+    </div>
+
+</div>
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+    // 面包屑导航需要加载element模块
+    layui.use('element', function () {
+        //需要依赖element模块
+        var element = layui.element;
+        element.init()
+    });
+    // form模块
+    layui.use('form', function () {
+        var form = layui.form;
+        var $ = layui.$;
+
+        //监听提交
+        form.on('submit(formSearch)', function (data) {
+            console.log("submit(formSearch)")
+            var url = "/api/oss/v1/fileopt/findFile/"
+                      + data.field.fileId + "?appName=" + data.field.appName + "&&needData=64";
+            $.ajax({
+                       "url": url,
+                       "type": "GET",
+//                       "async": false,
+                       "contentType": "application/json",
+//                       headers: {
+//                           "Authorization": "Basic SEhSSnl0ZUFJSGlmaWVHUlJIdHJlZUZKaWVqa2pJRmlkZmRvRnJldDpUeXlPR3JlclllaWkzRkc5OVlUb290cm9HWUpMTzg1NFRUeXRM",
+//                       },
+                       "success": function (data) {
+                           console.log(data)
+                           if (data.code == 0) {
+                               var src = "data:image/jpeg|png|gif;base64," + data.data.fileBase64;
+                               $("#picPreView").attr("src", src);
+                           } else {
+                               layer.msg(data.message, {icon: 5, time: 2000});
+                           }
+                       },
+                   });
+
+            return false;
+        });
+    });
+
+</script>
+</body>
+
+</html>

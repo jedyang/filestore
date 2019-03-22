@@ -9,11 +9,13 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 
@@ -28,9 +30,18 @@ public class AdminLoginController {
     @Autowired
     private UserService userService;
 
+    @Value("${me.env}")
+    private String env;
+
     @RequestMapping(value = "/login")
-    public String login() {
-        return "login";
+    public ModelAndView login() {
+        ModelAndView view = new ModelAndView();
+
+        view.addObject("env", env);
+
+        view.setViewName("login");
+
+        return view;
     }
 
     /**
